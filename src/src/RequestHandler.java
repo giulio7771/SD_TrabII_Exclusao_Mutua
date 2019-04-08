@@ -23,15 +23,18 @@ public class RequestHandler extends Thread {
                 App.queueLock.unlock();
             } catch (Exception ex) {
             }
-
+            App.queueLock.lock();
+            Process process = App.requestQueue.poll();
+            App.queueLock.unlock();
+            System.out.println("\nRecurso cedito ao processo: "+process.id);
+            int time = 5000 + new Random().nextInt(10000);
             try {
-                Thread.sleep(5000 + new Random().nextInt(10000));
+                Thread.sleep(time);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
             }
-            App.queueLock.lock();
-            App.requestQueue.poll();
-            App.queueLock.unlock();
+            System.out.println("\nRecurso liberado pelo processo: "+process.id+" após "+time/1000+" segundos");
+            
         }
     }
 
